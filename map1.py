@@ -27,7 +27,8 @@ def map_color(country):
 
 map = folium.Map(location=[38.58, -99.09], zoom_start=5, tiles = "Stamen Terrain")
 
-fg = folium.FeatureGroup(name="My Map")
+fgv = folium.FeatureGroup(name="Volcanoes")
+
 # For loop to create multiple markers in the map
 for lt, ln, nm, kd, el in zip(lat, lon, name, kind, elev):
     html= f"""
@@ -36,9 +37,13 @@ for lt, ln, nm, kd, el in zip(lat, lon, name, kind, elev):
         Height: {str(el)}m
         """
     iframe = folium.IFrame(html = html, width=200, height=100)
-    fg.add_child(folium.CircleMarker(location = [lt, ln], radius = 6, popup = folium.Popup(iframe), fill_color = color_producer(el), color = "grey", fill_opacity = 0.7))
+    fgv.add_child(folium.CircleMarker(location = [lt, ln], radius = 6, popup = folium.Popup(iframe), fill_color = color_producer(el), color = "grey", fill_opacity = 0.7))
 
-fg.add_child(folium.GeoJson(data=open("world.json", "r", encoding="utf-8-sig").read(), style_function=lambda x: {"fillColor": map_color(x)}))
+fgp = folium.FeatureGroup(name="Population")
 
-map.add_child(fg)
+fgp.add_child(folium.GeoJson(data=open("world.json", "r", encoding="utf-8-sig").read(), style_function=lambda x: {"fillColor": map_color(x)}))
+
+map.add_child(fgv)
+map.add_child(fgp)
+map.add_child(folium.LayerControl())
 map.save("Map1.html")
