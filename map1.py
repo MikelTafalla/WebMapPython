@@ -17,6 +17,14 @@ def color_producer(elevation):
     else:
         return "red"
 
+def map_color(country):
+    if country["properties"]["POP2005"] < 10000000:
+        return "green"
+    elif 10000000 <= country["properties"]["POP2005"] < 20000000:
+        return "orange"
+    else:
+        return "red"
+
 map = folium.Map(location=[38.58, -99.09], zoom_start=5, tiles = "Stamen Terrain")
 
 fg = folium.FeatureGroup(name="My Map")
@@ -30,7 +38,7 @@ for lt, ln, nm, kd, el in zip(lat, lon, name, kind, elev):
     iframe = folium.IFrame(html = html, width=200, height=100)
     fg.add_child(folium.CircleMarker(location = [lt, ln], radius = 6, popup = folium.Popup(iframe), fill_color = color_producer(el), color = "grey", fill_opacity = 0.7))
 
-fg.add_child(folium.GeoJson(data=(open("world.json", "r", encoding="utf-8-sig").read())))
+fg.add_child(folium.GeoJson(data=open("world.json", "r", encoding="utf-8-sig").read(), style_function=lambda x: {"fillColor": map_color(x)}))
 
 map.add_child(fg)
 map.save("Map1.html")
