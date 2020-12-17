@@ -8,6 +8,15 @@ name = list(data["NAME"])
 kind = list(data["TYPE"])
 elev = list(data["ELEV"])
 
+# Function to change color markers depending on elevation
+def color_producer(elevation):
+    if elevation < 1000:
+        return "green"
+    elif 1000 <= elevation < 3000:
+        return "orange"
+    else:
+        return "red"
+
 map = folium.Map(location=[38.58, -99.09], zoom_start=5, tiles = "Stamen Terrain")
 
 fg = folium.FeatureGroup(name="My Map")
@@ -19,7 +28,7 @@ for lt, ln, nm, kd, el in zip(lat, lon, name, kind, elev):
         Height: {str(el)}m
         """
     iframe = folium.IFrame(html = html, width=200, height=100)
-    fg.add_child(folium.Marker(location=[lt, ln], popup=folium.Popup(iframe), icon=folium.Icon(color="green")))
+    fg.add_child(folium.Marker(location=[lt, ln], popup=folium.Popup(iframe), icon=folium.Icon(color=color_producer(el))))
 
 map.add_child(fg)
 
